@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.IO;
 
 namespace ConsoleFileManager.FileSystemManagement
@@ -17,104 +17,82 @@ namespace ConsoleFileManager.FileSystemManagement
 
         #region Get Info
 
-        public Info GetInfoDirectory(string directory) => new DirectoryInfo(directory).ToInfo();
+        public DirectoryInfo GetInfoDirectory(string directoryPath) => new(directoryPath);
 
-        public Info GetInfoFile(string filePath) => new FileInfo(filePath).ToInfo();
+        public FileInfo GetInfoFile(string filePath) => new(filePath);
 
         #endregion
 
         #region Copy
 
-        public void CopyDirectory(string directory)
+        public void CopyDirectory(string from, string to)
         {
-
+            if (!Directory.Exists(from))
+                throw ExceptionsFactory.PathNotExist(from, nameof(from));
+            if (!Directory.Exists(to)) 
+                Directory.CreateDirectory(to);
+            Directory.Move(from,to);
         }
 
-        public void CopyDirectories(IEnumerable<string> directories)
+        public void CopyDirectories(ImmutableArray<string> directories, string to)
         {
-
+            for (var i = 0; i < directories.Length; i++)
+            {
+                CopyDirectory(directories[i], to);
+            }
         }
 
-        public void CopyFile(string filePath)
+        public void CopyFile(string from, string to, bool rewrite = false)
         {
-
+            if(!File.Exists(from))
+                throw ExceptionsFactory.PathNotExist(from, nameof(from));
+            if(!rewrite && File.Exists(to))
+                throw ExceptionsFactory.SamePathAlreadyExist(to, nameof(to));
+            File.Copy(from,to,true);
         }
 
-        public void CopyFiles(IEnumerable<string> files)
+        public void CopyFiles(ImmutableArray<string> files, string to, bool rewrite = false)
         {
-
+            for (var i = 0; i < files.Length; i++)
+            {
+                CopyFile(files[i], to, rewrite);
+            }
         }
 
         #endregion
 
         #region Delete
 
-        public void DeleteDirectory(string directory)
+        public void DeleteDirectory(string directory, bool withChild = false)
         {
-
+            if(!Directory.Exists(directory)) return;
+            Directory.Delete(directory, withChild);
         }
 
-        public void DeleteDirectories(IEnumerable<string> directories)
+        public void DeleteDirectories(ImmutableArray<string> directories, bool withChild = false)
         {
-
+            for (var i = 0; i < directories.Length; i++)
+            {
+                DeleteDirectory(directories[i],withChild);
+            }
         }
 
         public void DeleteFile(string filePath)
         {
-
+            if (!File.Exists(filePath)) return;
+            File.Delete(filePath);
         }
 
-        public void DeleteFiles(IEnumerable<string> files)
+        public void DeleteFiles(ImmutableArray<string> files)
         {
-
+            for (var i = 0; i < files.Length; i++)
+            {
+                DeleteFile(files[i]);
+            }
         }
 
         #endregion
 
-
-        public void Print()
-        {
-
-        }
-    }
-
-    public class Info
-    {
-        public FileSystemInfo SystemInfo { get; init; }
-        public bool IsFile { get; init; }
-        public FileAttributes Attributes => SystemInfo.Attributes;
-
-        public long Length =>
-            IsFile
-                ? ((FileInfo) SystemInfo).Length
-                : ((DirectoryInfo) SystemInfo).GetLength();
-
-        public DateTime CreationTime => SystemInfo.CreationTime;
-        public DateTime LastAccessTime => SystemInfo.LastAccessTime;
-        public DateTime LastWriteTime => SystemInfo.LastWriteTime;
-    }
-
-    public static class Extensions
-    {
-        public static Info ToInfo(this DirectoryInfo directory) => new() {IsFile = false, SystemInfo = directory};
-        public static Info ToInfo(this FileInfo file) => new() {IsFile = true, SystemInfo = file};
-
-        public static long GetLength(this DirectoryInfo directory)
-        {
-            long actualLength = 0;
-            var innerDirectories = directory.GetDirectories();
-            for (var i = 0; i < innerDirectories.Length; i++)
-            {
-                actualLength = actualLength + innerDirectories[i].GetLength();
-            }
-
-            var innerFiles = directory.GetFiles();
-            for (var i = 0; i < innerFiles.Length; i++)
-            {
-                actualLength = actualLength + innerFiles[i].Length;
-            }
-
-            return actualLength;
-        }
+        
     }
 }
