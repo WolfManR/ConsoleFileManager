@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using ConsoleFileManager.Infrastructure.Exceptions;
 using ConsoleFileManager.Render;
 
-namespace ConsoleFileManager.Infrastructure.Commands
+namespace ConsoleFileManager.Infrastructure.Commands.FileSystemCLI
 {
     public class ListPathCommand : Command
     {
@@ -24,7 +23,7 @@ namespace ConsoleFileManager.Infrastructure.Commands
                 throw ExceptionsFactory.IncorrectArgument("Path to directory", nameof(args));
 
             if (Path.IsPathFullyQualified(path) && !Directory.Exists(path))
-                throw ExceptionsFactory.PathNotExist(args.ToString(), nameof(args));
+                throw ExceptionsFactory.PathNotExist(args.ToString());
 
             return true;
         }

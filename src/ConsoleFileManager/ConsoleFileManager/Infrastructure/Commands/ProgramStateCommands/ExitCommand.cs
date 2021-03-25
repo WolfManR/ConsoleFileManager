@@ -1,4 +1,4 @@
-﻿namespace ConsoleFileManager.Infrastructure.Commands
+﻿namespace ConsoleFileManager.Infrastructure.Commands.ProgramStateCommands
 {
     public class ExitCommand : Command
     {
