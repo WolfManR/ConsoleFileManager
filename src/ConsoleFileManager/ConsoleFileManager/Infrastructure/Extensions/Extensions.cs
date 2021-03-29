@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using ConsoleFileManager.Models;
 
-namespace ConsoleFileManager
+namespace ConsoleFileManager.Infrastructure.Extensions
 {
     public static class Extensions
     {
@@ -35,5 +35,8 @@ namespace ConsoleFileManager
 
             return actualLength;
         }
+
+
+        
     }
 }
