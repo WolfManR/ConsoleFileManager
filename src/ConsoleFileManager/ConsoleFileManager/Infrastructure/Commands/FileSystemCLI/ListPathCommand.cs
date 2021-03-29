@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using ConsoleFileManager.Infrastructure.Exceptions;
 using ConsoleFileManager.Render;
 
@@ -17,33 +18,12 @@ namespace ConsoleFileManager.Infrastructure.Commands.FileSystemCLI
         
 
         /// <inheritdoc />
-        public override bool CanHandle(string[] args)
-        {
-            if (args.Length <= 0 || args[0] is not { Length: > 0 } path)
-                throw ExceptionsFactory.IncorrectArgument("Path to directory", nameof(args));
-
-            if (Path.IsPathFullyQualified(path) && !Directory.Exists(path))
-                throw ExceptionsFactory.PathNotExist(args.ToString());
-
-            return true;
-        }
+        public override bool CanHandle(string[] args) => true;
 
         public override void Handle(string[] args)
         {
-            var path = args[0];
-
-            IEnumerable<FileSystemInfo> GetDirectoryStruct(string directory)
-            {
-                var info = new DirectoryInfo(directory);
-                foreach (var dir in info.GetDirectories())
-                    yield return dir;
-                foreach (var file in info.GetFiles())
-                    yield return file;
-            }
-
-
-            foreach (var systemInfo in GetDirectoryStruct(path))
-                ViewHandler.WriteLine(systemInfo.Name);
+            var toPrint = FilesManager.GetDirectoryStruct().Select(info => info.ToString());
+            ViewHandler.ContinuousPrint(toPrint);
         }
 
         #endregion

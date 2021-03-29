@@ -1,6 +1,6 @@
 ﻿using System.IO;
 using ConsoleFileManager.Infrastructure.Exceptions;
-using ConsoleFileManager.Infrastructure.Extensions;
+using ConsoleFileManager.Render;
 
 namespace ConsoleFileManager.Infrastructure.Commands.FileSystemCLI
 {
@@ -17,7 +17,7 @@ namespace ConsoleFileManager.Infrastructure.Commands.FileSystemCLI
         /// <inheritdoc />
         public override bool CanHandle(string[] args)
         {
-            if (args.Length < 1)
+            if (args.Length != 1)
                 throw ExceptionsFactory.IncorrectArgument("Path to delete", nameof(args));
             return Path.IsPathFullyQualified(args[0]);
         }
@@ -26,27 +26,15 @@ namespace ConsoleFileManager.Infrastructure.Commands.FileSystemCLI
         public override void Handle(string[] args)
         {
             var toDelete = args[0];
-            if (toDelete.StringPathIsDirectory())
+            if (FilesManager.StringPathIsDirectory(toDelete))
             {
-                DeleteDirectory(toDelete);
+                FilesManager.DeleteDirectory(toDelete);
                 return;
             }
 
-            DeleteFile(toDelete);
+            FilesManager.DeleteFile(toDelete);
         }
 
         #endregion
-
-        public void DeleteDirectory(string directory, bool withChild = false)
-        {
-            if (!Directory.Exists(directory)) return;
-            Directory.Delete(directory, withChild);
-        }
-
-        public void DeleteFile(string filePath)
-        {
-            if (!File.Exists(filePath)) return;
-            File.Delete(filePath);
-        }
     }
 }
