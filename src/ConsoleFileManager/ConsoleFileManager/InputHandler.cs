@@ -17,7 +17,7 @@ namespace ConsoleFileManager
         {
             var toHandle = input.Split(' ').AsSpan();
             var commandName = toHandle[0];
-            var args = toHandle.Slice(1);
+            var args = toHandle.Length > 1 ? toHandle[1..] : Span<string>.Empty;
 
             var command = parser.Find(commandName);
             if (command is null)
