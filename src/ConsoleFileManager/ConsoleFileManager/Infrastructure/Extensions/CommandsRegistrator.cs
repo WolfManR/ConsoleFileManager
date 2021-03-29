@@ -10,6 +10,7 @@ namespace ConsoleFileManager.Infrastructure.Extensions
             .Register(new ExitCommand())
             .Register(new CopyPathCommand())
             .Register(new DeletePathCommand())
+            .Register(new ChangeDirectoryCommand())
         ;
     }
 }
