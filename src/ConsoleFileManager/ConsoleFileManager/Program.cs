@@ -1,12 +1,5 @@
-﻿using System;
-using System.Reflection.Metadata;
-using System.Text;
-
-using ConsoleFileManager.Infrastructure;
+﻿using ConsoleFileManager.Infrastructure;
 using ConsoleFileManager.Infrastructure.Extensions;
-using ConsoleFileManager.Render;
-using ConsoleFileManager.Render.Controls;
-using ConsoleFileManager.Render.Primitives;
 
 namespace ConsoleFileManager
 {
@@ -46,50 +39,8 @@ namespace ConsoleFileManager
     public class Configuration
     {
         public string OpenedPath { get; set; } = "D:/demo";
-        public int WindowWidth { get; set; } = 120;
+        public int WindowWidth { get; set; } = 160;
         public int WindowHeight { get; set; } = 40;
-    }
-
-    public class Printer
-    {
-        private readonly Configuration config;
-        private static bool _isExit;
-
-        public Printer(Configuration config)
-        {
-            this.config = config;
-        }
-
-        public void HandleInput()
-        {
-            Console.BufferHeight = Console.WindowHeight = config.WindowHeight;
-            Console.BufferWidth = Console.WindowWidth = config.WindowWidth;
-            //while (!_isExit)
-            //{
-            //}
-            PrintBorder(2, 2, 20, 10);
-            Console.SetCursorPosition(0, 30);
-            Console.WriteLine();
-        }
-
-
-
-        private void PrintBorder(int x, int y, int width, int height)
-        {
-            new Border(x, y, width, height)
-            {
-                ContentControl = new StackPanel(
-                    "There some text",
-                    "There some text",
-                    "There some text",
-                    "There some text"
-                    )
-                {
-                    Size = new Size(16, 8)
-                },
-                Padding = 1
-            }.Draw();
-        }
     }
 
     public static class Alphabet
