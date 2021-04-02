@@ -14,5 +14,21 @@
             Right = right;
             Bottom = bottom;
         }
+
+        public Thickness(int padding) => Left =  Top =  Right =  Bottom = padding;
+
+        public Thickness(int horizontal, int vertical)
+        {
+            Left = Right = horizontal;
+            Top = Bottom = vertical;
+        }
+
+        public static implicit operator Thickness(int padding) => new(padding);
+
+        public static implicit operator Thickness((int horizontal, int vertical) padding) => 
+            new(padding.horizontal,padding.vertical);
+
+        public static implicit operator Thickness((int left, int top, int right, int bottom) padding) => 
+            new(padding.left,padding.top,padding.right,padding.bottom);
     }
 }
