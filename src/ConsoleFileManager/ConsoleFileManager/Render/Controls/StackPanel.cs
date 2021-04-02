@@ -17,18 +17,17 @@ namespace ConsoleFileManager.Render.Controls
             }
         }
 
-        public override void Print(int x, int y)
+        public override void Print()
         {
             if(content.Count <= 0) return;
-            var (startX,startY, width, height) = CalculateContentPlace(x, y);
-            
-            for (int i = startY, j = 0; j < content.Count && i < height; i++, j++)
+            var (startX,startY, width, height) = CalculateContentPlace();
+            var bottomLine = height + startY;
+            for (int i = startY, j = 0; j < content.Count && i < bottomLine; i++, j++)
             {
                 var current = content[j].ToString();
                 if(current is null) continue;
-
-                ContentPresenter.Content = current;
-                ContentPresenter.Print(startX, i, width);
+                
+                ContentPresenter.Print(startX, i, width, current);
             }
         }
     }

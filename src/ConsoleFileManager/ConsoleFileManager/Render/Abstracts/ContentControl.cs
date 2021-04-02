@@ -4,21 +4,24 @@ namespace ConsoleFileManager.Render.Abstracts
 {
     public abstract class ContentControl
     {
-        public Size Size { get; set; }
+        public int X { get; set; }
+        public int Y { get; set; }
+        public virtual Size Size { get; set; }
 
         public Thickness Margin { get; set; }
         public Thickness Padding { get; set; }
+        public abstract void Print();
 
-        public abstract void Print(int x, int y);
+        protected (int,int) CalculateOuterStartPoint() => (X + Margin.Left, Y + Margin.Top);
 
-        protected (int,int) CalculateOuterStartPoint(int x, int y) => (x + Margin.Left, y + Margin.Top);
-
-        protected (int x, int y, int width, int height) CalculateContentPlace(int x, int y)
+        protected (int x, int y, int width, int height) CalculateContentPlace()
         {
-            var (outX,outY) = CalculateOuterStartPoint(x, y);
-            var width = Size.Width - Padding.Right - Padding.Left;
-            var height = Size.Height - Padding.Top - Padding.Bottom;
-            return (outX + Padding.Left, outY + Padding.Top, width, height);
+            (int x, int y, int width, int height) result = (0, 0, 0, 0);
+            (result.x,result.y) = CalculateOuterStartPoint();
+            result.width = Size.Width - Padding.Right - Padding.Left;
+            result.height = Size.Height - Padding.Top - Padding.Bottom;
+
+            return result;
         }
     }
 }
