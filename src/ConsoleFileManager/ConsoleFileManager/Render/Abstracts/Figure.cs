@@ -6,17 +6,21 @@ namespace ConsoleFileManager.Render.Abstracts
 {
     public class Figure : IEnumerable<Point>
     {
-        protected List<Point> points = new();
+        protected readonly List<Point> Points = new();
 
         public virtual void Draw()
         {
-            for (var i = 0; i < points.Count; i++)
+            for (var i = 0; i < Points.Count; i++)
             {
-                points[i].Draw();
+                Points[i].Draw();
             }
         }
 
-        public IEnumerator<Point> GetEnumerator() => points.GetEnumerator();
+        public void Add(Point point) => Points.Add(point);
+        public void Add(IEnumerable<Point> points) => Points.AddRange(points);
+        public void Clear() => Points.Clear();
+
+        public IEnumerator<Point> GetEnumerator() => Points.GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 }

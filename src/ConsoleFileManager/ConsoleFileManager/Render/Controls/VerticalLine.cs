@@ -9,7 +9,7 @@ namespace ConsoleFileManager.Render.Controls
             var last = length + y;
             for (var i = y; i <= last; i++)
             {
-                points.Add(new(x, i, symbol));
+                Points.Add(new(x, i, symbol));
             }
         }
     }
