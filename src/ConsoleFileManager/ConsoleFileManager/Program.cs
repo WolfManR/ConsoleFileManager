@@ -5,33 +5,17 @@ namespace ConsoleFileManager
 {
     class Program
     {
-        private static bool _isExit;
-
-        private static readonly InputHandler handler = new(
-            new InputCommandsParser()
-            .CommandsRegistration());
-
-
-
         static void Main()
         {
-            new Printer(new Configuration()).HandleInput();
-
-            //while (!_isExit)
-            //{
-            //    Console.WriteLine("Input command");
-            //    var userInput = Console.ReadLine();
-            //    if(string.IsNullOrWhiteSpace(userInput)) continue;
-
-            //    handler.Handle(userInput);
-            //}
+            var commandsParser = new InputCommandsParser().CommandsRegistration();
+            var inputHandler = new InputHandler(new Configuration(), commandsParser);
+            inputHandler.OnClose += Close;
+            inputHandler.Start();
         }
-
-
 
         public static void Close()
         {
-            _isExit = true;
+            
         }
     }
 

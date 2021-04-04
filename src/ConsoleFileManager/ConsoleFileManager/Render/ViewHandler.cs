@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using ConsoleFileManager.Render.Controls;
 
 namespace ConsoleFileManager.Render
 {
     public static class ViewHandler
     {
         private static Configuration config;
-        
+        public static ListView View;
         static ViewHandler()
         {
             LoadConfiguration();
@@ -61,6 +62,16 @@ namespace ConsoleFileManager.Render
                 Console.WriteLine(question);
 
             return Console.ReadLine();
+        }
+
+        public static void Prev()
+        {
+            View.Prev();
+        }
+
+        public static void Next()
+        {
+            View.Next();
         }
     }
 }
