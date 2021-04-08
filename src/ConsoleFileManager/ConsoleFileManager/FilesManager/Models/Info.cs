@@ -1,4 +1,4 @@
-﻿namespace ConsoleFileManager.FileManager.Models
+﻿namespace ConsoleFileManager.FilesManager.Models
 {
     public class Info
     {

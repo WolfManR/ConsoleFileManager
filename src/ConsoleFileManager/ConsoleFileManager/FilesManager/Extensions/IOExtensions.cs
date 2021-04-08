@@ -1,7 +1,7 @@
-﻿using ConsoleFileManager.FileManager.Models;
-using System.IO;
+﻿using System.IO;
+using ConsoleFileManager.FilesManager.Models;
 
-namespace ConsoleFileManager.FileManager.Extensions
+namespace ConsoleFileManager.FilesManager.Extensions
 {
     // ReSharper disable once InconsistentNaming
     public static class IOExtensions

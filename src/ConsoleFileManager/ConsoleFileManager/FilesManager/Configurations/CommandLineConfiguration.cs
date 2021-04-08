@@ -1,4 +1,4 @@
-﻿namespace ConsoleFileManager.FileManager.Configuration
+﻿namespace ConsoleFileManager.FilesManager.Configurations
 {
     public class CommandLineConfiguration
     {

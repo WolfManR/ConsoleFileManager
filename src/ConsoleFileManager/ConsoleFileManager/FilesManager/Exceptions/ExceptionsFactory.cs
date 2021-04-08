@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ConsoleFileManager.FileManager.Exceptions
+namespace ConsoleFileManager.FilesManager.Exceptions
 {
     public static class ExceptionsFactory
     {
