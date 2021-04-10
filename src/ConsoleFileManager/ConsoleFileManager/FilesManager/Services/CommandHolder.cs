@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 
 using ConsoleFileManager.FilesManager.Models;
-using ConsoleFileManager.Render;
 
 namespace ConsoleFileManager.FilesManager.Services
 {
@@ -20,9 +19,12 @@ namespace ConsoleFileManager.FilesManager.Services
         private readonly StringBuilder _buffer = new StringBuilder();
         private readonly List<string> _history = new List<string>();
         private int _currentHistoryLine;
-        private int _commandIndex;
+        
         public bool HasHistory => _history.Count > 0;
         public bool HasCommandLine => _buffer.Length > 0;
+        public int CommandLineLength => _buffer.Length;
+
+
         public event Action<string> OnCommandChanged;
         public event Action OnCommandExecuted;
 
@@ -60,7 +62,6 @@ namespace ConsoleFileManager.FilesManager.Services
         {
             var command = _buffer.ToString();
             _buffer.Clear();
-            _commandIndex = 0;
             _history.Add(command);
             _currentHistoryLine = -1;
             OnCommandExecuted?.Invoke();
@@ -128,6 +129,17 @@ namespace ConsoleFileManager.FilesManager.Services
             if (fileManagerCommands.Find(c => string.Join(' ', c.Abbreviations) == abbreviations) is null)
                 fileManagerCommands.Add(command);
             return this;
+        }
+
+        public string RemoveChar(int index)
+        {
+            _buffer.Remove(index, 1);
+            return _buffer.ToString(index, _buffer.Length - index - 1);
+        }
+
+        public void AppendCharToCommandLine(char toAppend)
+        {
+            _buffer.Append(toAppend);
         }
     }
 }

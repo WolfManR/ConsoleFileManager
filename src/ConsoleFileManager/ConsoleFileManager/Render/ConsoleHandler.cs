@@ -1,13 +1,15 @@
 ﻿using System;
 using ConsoleFileManager.FilesManager.Configurations;
-
+using static System.Console;
 namespace ConsoleFileManager.Render
 {
     public class ConsoleHandler
     {
         private Configuration _configuration;
         private CommandLineConfiguration CommandLineConfiguration => _configuration.CommandLineConfiguration;
-
+        private int _commandIndex;
+        public bool CanMoveCursorLeft() => _commandIndex <= 0;
+        public bool CanMoveCursorRight(int currentCommandLength) => _commandIndex > currentCommandLength - 1;
         public ConsoleHandler(Configuration configuration)
         {
             _configuration = configuration;
@@ -17,22 +19,52 @@ namespace ConsoleFileManager.Render
 
         public void ReturnCursorToCommandLineStartPosition()
         {
-            Console.SetCursorPosition(CommandLineConfiguration.X, CommandLineConfiguration.Y);
+            SetCursorPosition(CommandLineConfiguration.X, CommandLineConfiguration.Y);
         }
 
         public void ClearCommandLine()
         {
             ReturnCursorToCommandLineStartPosition();
-            Console.Write(new string(' ', CommandLineConfiguration.Width));
+            Write(new string(' ', CommandLineConfiguration.Width));
             ReturnCursorToCommandLineStartPosition();
+            _commandIndex = 0;
         }
 
-        public void ReturnCursor(int currentCommandLength)
+        public void ReturnCursor()
         {
-            if (Console.CursorTop != CommandLineConfiguration.Y)
+            if (CursorTop != CommandLineConfiguration.Y)
                 ReturnCursorToCommandLineStartPosition();
-            if (currentCommandLength != 0)
-                Console.CursorLeft = CommandLineConfiguration.X + currentCommandLength;
+            if (_commandIndex != 0)
+                CursorLeft = CommandLineConfiguration.X + _commandIndex;
+        }
+
+        public int MoveCursorRight()
+        {
+            CursorLeft++;
+            _commandIndex++;
+            return _commandIndex;
+        }
+
+        public int MoveCursorLeft()
+        {
+            CursorLeft--;
+            _commandIndex--;
+            return _commandIndex;
+        }
+
+        public void ReplaceCommandLineText(int index, string toReplace)
+        {
+            var startPoint = GetCursorPosition();
+            ReturnCursorToCommandLineStartPosition();
+            CursorLeft += index;
+            Write(toReplace);
+            SetCursorPosition(startPoint.Left, startPoint.Top);
+        }
+
+        public void AppendCharToCommandLine(char toAppend)
+        {
+            _commandIndex++;
+            Write(toAppend);
         }
     }
 }
