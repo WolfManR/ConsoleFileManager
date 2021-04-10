@@ -1,4 +1,6 @@
-﻿namespace ConsoleFileManager.FilesManager.Services
+﻿using System;
+
+namespace ConsoleFileManager.FilesManager.Services
 {
     public class Messenger
     {
@@ -6,6 +8,18 @@
         {
 
             return true;
+        }
+
+        public void Report(string message)
+        {
+        }
+
+        public void Report(Exception exception)
+        {
+        }
+
+        public void PrintCommand(string command)
+        {
         }
     }
 }
