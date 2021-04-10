@@ -11,6 +11,7 @@ namespace ConsoleFileManager.FilesManager
         private readonly FileManager _filesManager;
         private readonly Configuration _config;
         private Action _onClose;
+        private bool _isExit = false;
 
         public FilesManagerSystem()
         {
@@ -36,7 +37,7 @@ namespace ConsoleFileManager.FilesManager
 
         public void Start()
         {
-            while (true)
+            while (!_isExit)
             {
                 
             }
@@ -46,6 +47,12 @@ namespace ConsoleFileManager.FilesManager
         private void SwitchMode()
         {
             _config.InputMode = !_config.InputMode;
+        }
+
+        public void Exit()
+        {
+            _isExit = true;
+            _onClose?.Invoke();
         }
     }
 }
