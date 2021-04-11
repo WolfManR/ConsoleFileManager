@@ -31,7 +31,7 @@ namespace ConsoleFileManager.FilesManager
             _messenger = new();
             _filesManager = new(_messenger);
             _consoleHandler = new(_config);
-            _commandHolder = new (_config.InputMode);
+            _commandHolder = new (_config.InputMode, _messenger);
             _commandHolder.OnCommandChanged += _commandHolder_OnCommandChanged;
             _commandHolder.OnCommandExecuted += _commandHolder_OnCommandExecuted;
             _commandHolder.OnInputHandleModeChanged += CommandHolderOnOnInputHandleModeChanged;
@@ -82,9 +82,10 @@ namespace ConsoleFileManager.FilesManager
 
         public void Start()
         {
+            _filesManager.ChangeDirectory(_config.OpenedPath);
             while (!_isExit)
             {
-                _commandHolder.HandleInput(Console.ReadKey());
+                _commandHolder.HandleInput(Console.ReadKey(true));
             }
         }
         
