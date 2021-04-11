@@ -10,11 +10,11 @@ namespace ConsoleFileManager.FilesManager.Services
     {
         private readonly Messenger _messenger;
 
-        private List<FileManagerCommand> fileManagerCommands = new();
-        private List<ConsoleKeyCommand> commandModeCommands = new();
-        private List<ConsoleKeyCommand> viewModeCommands = new();
+        private readonly List<FileManagerCommand> _fileManagerCommands = new();
+        private readonly List<ConsoleKeyCommand> _commandModeCommands = new();
+        private readonly List<ConsoleKeyCommand> _viewModeCommands = new();
 
-
+        private InputHandleMode _inputHandleMode;
 
         private readonly StringBuilder _buffer = new StringBuilder();
         private readonly List<string> _history = new List<string>();
@@ -27,8 +27,44 @@ namespace ConsoleFileManager.FilesManager.Services
 
         public event Action<string> OnCommandChanged;
         public event Action OnCommandExecuted;
+        public event Action<InputHandleMode> OnInputHandleModeChanged;
 
-        public (string abbreviation, string[] args) ParseCommandLine(string commandLine)
+        public CommandHolder(InputHandleMode inputHandleMode)
+        {
+            this._inputHandleMode = inputHandleMode;
+        }
+
+
+        public void HandleInput(ConsoleKeyInfo key)
+        {
+            var commands = _inputHandleMode switch
+                           {
+                               InputHandleMode.CommandLine => _commandModeCommands,
+                               InputHandleMode.List => _viewModeCommands,
+                               _ => throw new ArgumentOutOfRangeException()
+                           };
+
+            for (var i = 0; i < commands.Count; i++)
+            {
+                if (!commands[i].CanHandle(key)) continue;
+                commands[i].Handle(key);
+                return;
+            }
+        }
+
+        public void SwitchMode()
+        {
+            _inputHandleMode = _inputHandleMode switch
+                              {
+                                  InputHandleMode.CommandLine => InputHandleMode.List,
+                                  InputHandleMode.List        => InputHandleMode.CommandLine,
+                                  _                           => throw new ArgumentOutOfRangeException(nameof(_inputHandleMode))
+                              };
+            OnInputHandleModeChanged?.Invoke(_inputHandleMode);
+        }
+
+
+        private (string abbreviation, string[] args) ParseCommandLine(string commandLine)
         {
             var toHandle = commandLine.Split(' ').AsSpan();
             var abbreviation = toHandle[0];
@@ -49,10 +85,10 @@ namespace ConsoleFileManager.FilesManager.Services
                 return false;
             }
 
-            for (var i = 0; i < fileManagerCommands.Count; i++)
+            for (var i = 0; i < _fileManagerCommands.Count; i++)
             {
-                if (IsCorrectCommand(fileManagerCommands[i], abbreviation))
-                    return fileManagerCommands[i];
+                if (IsCorrectCommand(_fileManagerCommands[i], abbreviation))
+                    return _fileManagerCommands[i];
             }
 
             return null;
@@ -127,14 +163,14 @@ namespace ConsoleFileManager.FilesManager.Services
         public CommandHolder Register(FileManagerCommand command)
         {
             var abbreviations = string.Join(' ', command.Abbreviations);
-            if (fileManagerCommands.Find(c => string.Join(' ', c.Abbreviations) == abbreviations) is null)
-                fileManagerCommands.Add(command);
+            if (_fileManagerCommands.Find(c => string.Join(' ', c.Abbreviations) == abbreviations) is null)
+                _fileManagerCommands.Add(command);
             return this;
         }
 
         public CommandHolder Register(ConsoleKeyCommand command)
         {
-            commandModeCommands.Add(command);
+            _commandModeCommands.Add(command);
             return this;
         }
 

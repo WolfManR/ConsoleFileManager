@@ -1,4 +1,5 @@
 ﻿using System;
+using ConsoleFileManager.FilesManager.Models;
 
 namespace ConsoleFileManager.FilesManager.Configurations
 {
@@ -8,7 +9,7 @@ namespace ConsoleFileManager.FilesManager.Configurations
         public int WindowWidth { get; set; } = 160;
         public int WindowHeight { get; set; } = 40;
         public int ViewPageSize { get; set; } = 20;
-        public bool InputMode { get; set; } = true;
+        public InputHandleMode InputMode { get; set; } = InputHandleMode.CommandLine;
 
         public Action OnClose { get; set; }
 

@@ -2,6 +2,7 @@
 using ConsoleFileManager.FilesManager.Commands.CommandModeCommands;
 using ConsoleFileManager.FilesManager.Commands.FileManagerCommands;
 using ConsoleFileManager.FilesManager.Configurations;
+using ConsoleFileManager.FilesManager.Models;
 using ConsoleFileManager.FilesManager.Services;
 using ConsoleFileManager.Render;
 
@@ -30,11 +31,17 @@ namespace ConsoleFileManager.FilesManager
             _messenger = new();
             _filesManager = new(_messenger);
             _consoleHandler = new(_config);
-            _commandHolder = new ();
+            _commandHolder = new (_config.InputMode);
             _commandHolder.OnCommandChanged += _commandHolder_OnCommandChanged;
             _commandHolder.OnCommandExecuted += _commandHolder_OnCommandExecuted;
+            _commandHolder.OnInputHandleModeChanged += CommandHolderOnOnInputHandleModeChanged;
             FileManagerCommandsRegister(_commandHolder);
             CommandModeCommandsRegister(_commandHolder);
+        }
+
+        private void CommandHolderOnOnInputHandleModeChanged(InputHandleMode mode)
+        {
+            _config.InputMode = mode;
         }
 
         private void FileManagerCommandsRegister(CommandHolder holder) => holder
@@ -77,15 +84,10 @@ namespace ConsoleFileManager.FilesManager
         {
             while (!_isExit)
             {
-                
+                _commandHolder.HandleInput(Console.ReadKey());
             }
         }
-
-
-        private void SwitchMode()
-        {
-            _config.InputMode = !_config.InputMode;
-        }
+        
 
         public void Exit()
         {
