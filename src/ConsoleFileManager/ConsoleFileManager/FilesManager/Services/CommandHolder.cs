@@ -29,9 +29,10 @@ namespace ConsoleFileManager.FilesManager.Services
         public event Action OnCommandExecuted;
         public event Action<InputHandleMode> OnInputHandleModeChanged;
 
-        public CommandHolder(InputHandleMode inputHandleMode)
+        public CommandHolder(InputHandleMode inputHandleMode, Messenger messenger)
         {
             this._inputHandleMode = inputHandleMode;
+            _messenger = messenger;
         }
 
 
@@ -176,8 +177,13 @@ namespace ConsoleFileManager.FilesManager.Services
 
         public string RemoveChar(int index)
         {
+            var length = _buffer.Length - index;
             _buffer.Remove(index, 1);
-            return _buffer.ToString(index, _buffer.Length - index - 1);
+            if (index == _buffer.Length) return " ";
+            var toReplace = _buffer.ToString(index, _buffer.Length - index);
+            if (toReplace.Length < length)
+                toReplace += new string(' ', length - toReplace.Length);
+            return toReplace;
         }
 
         public void AppendCharToCommandLine(char toAppend)

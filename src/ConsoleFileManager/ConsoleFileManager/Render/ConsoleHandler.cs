@@ -8,8 +8,8 @@ namespace ConsoleFileManager.Render
         private Configuration _configuration;
         private CommandLineConfiguration CommandLineConfiguration => _configuration.CommandLineConfiguration;
         private int _commandIndex;
-        public bool CanMoveCursorLeft() => _commandIndex <= 0;
-        public bool CanMoveCursorRight(int currentCommandLength) => _commandIndex > currentCommandLength - 1;
+        public bool CanMoveCursorLeft() => _commandIndex > 0;
+        public bool CanMoveCursorRight(int currentCommandLength) => _commandIndex <= currentCommandLength - 1;
         public ConsoleHandler(Configuration configuration)
         {
             _configuration = configuration;
