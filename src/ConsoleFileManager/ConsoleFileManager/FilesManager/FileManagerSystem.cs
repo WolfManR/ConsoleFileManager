@@ -1,5 +1,6 @@
 ﻿using System;
-
+using ConsoleFileManager.FilesManager.Commands.CommandModeCommands;
+using ConsoleFileManager.FilesManager.Commands.FileManagerCommands;
 using ConsoleFileManager.FilesManager.Configurations;
 using ConsoleFileManager.FilesManager.Services;
 using ConsoleFileManager.Render;
@@ -28,10 +29,30 @@ namespace ConsoleFileManager.FilesManager
 
             _messenger = new();
             _filesManager = new(_messenger);
-            _commandHolder = new();
+            _consoleHandler = new(_config);
+            _commandHolder = new ();
             _commandHolder.OnCommandChanged += _commandHolder_OnCommandChanged;
             _commandHolder.OnCommandExecuted += _commandHolder_OnCommandExecuted;
+            FileManagerCommandsRegister(_commandHolder);
+            CommandModeCommandsRegister(_commandHolder);
         }
+
+        private void FileManagerCommandsRegister(CommandHolder holder) => holder
+            .Register(new ChangeDirectoryCommand(_filesManager))
+            .Register(new CopyPathCommand(_filesManager))
+            .Register(new DeletePathCommand(_filesManager))
+            .Register(new ExitCommand(this))
+        ;
+
+        private void CommandModeCommandsRegister(CommandHolder holder) => holder
+            .Register(new AppendCharToCommandLineCommand(_commandHolder,_consoleHandler))
+            .Register(new ExecuteFileManagerCommand(_commandHolder))
+            .Register(new MoveCursorLeftCommand(_consoleHandler))
+            .Register(new MoveCursorRightCommand(_commandHolder,_consoleHandler))
+            .Register(new NextCommandCommand(_commandHolder))
+            .Register(new PreviousCommandCommand(_commandHolder))
+            .Register(new RemovePreviousCharFromCommandLineCommand(_commandHolder,_consoleHandler))
+        ;
 
         private void _commandHolder_OnCommandExecuted()
         {

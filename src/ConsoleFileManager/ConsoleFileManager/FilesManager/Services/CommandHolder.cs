@@ -68,7 +68,8 @@ namespace ConsoleFileManager.FilesManager.Services
 
             ExecuteCommand(command);
         }
-        public void ExecuteCommand(string input)
+
+        private void ExecuteCommand(string input)
         {
             var (abbreviation, args) = ParseCommandLine(input);
             var command = Find(abbreviation);
@@ -128,6 +129,12 @@ namespace ConsoleFileManager.FilesManager.Services
             var abbreviations = string.Join(' ', command.Abbreviations);
             if (fileManagerCommands.Find(c => string.Join(' ', c.Abbreviations) == abbreviations) is null)
                 fileManagerCommands.Add(command);
+            return this;
+        }
+
+        public CommandHolder Register(ConsoleKeyCommand command)
+        {
+            commandModeCommands.Add(command);
             return this;
         }
 
