@@ -18,6 +18,11 @@ namespace ConsoleFileManager.Render.Primitives
         public override bool Equals(object obj) => obj is Size size && Equals(size);
         public bool Equals(Size other) => Width == other.Width && Height == other.Height;
 
+        internal void Deconstruct(out int width, out int height)
+        {
+            width = Width;
+            height = Height;
+        }
 
         public static bool operator ==(Size left, Size right) => left.Equals(right);
 

@@ -18,7 +18,7 @@ namespace ConsoleFileManager.FilesManager.Services
 
         private readonly StringBuilder _buffer = new StringBuilder();
         private readonly List<string> _history = new List<string>();
-        private int _currentHistoryLine;
+        private int _currentHistoryLine = -1;
         
         public bool HasHistory => _history.Count > 0;
         public bool HasCommandLine => _buffer.Length > 0;
@@ -112,7 +112,7 @@ namespace ConsoleFileManager.FilesManager.Services
             var command = Find(abbreviation);
             if (command is null)
             {
-                _messenger.Report($"Not registered command for {abbreviation} to handle input:\n{string.Join(" ", args)}");
+                _messenger.Report($"Not registered command to handle input:\n{abbreviation}\n{string.Join(" ", args)}");
                 return;
             }
             try
@@ -128,38 +128,48 @@ namespace ConsoleFileManager.FilesManager.Services
 
         public void SetPreviousCommand()
         {
-            if (_currentHistoryLine >= _history.Count)
-                _currentHistoryLine = -1;
+            if(!HasHistory) return;
+            var line = _currentHistoryLine;
 
-            _currentHistoryLine = _currentHistoryLine switch
-                                  {
-                                      0                                     => 1,
-                                      var index when index < _history.Count => _currentHistoryLine + 1,
-                                      _                                     => _history.Count - 1
-                                  };
+            if (line <= 0)
+            {
+                _currentHistoryLine = _history.Count - 1;
+                SetCommand();
+                return;
+            }
 
-            var command = _history[_currentHistoryLine];
-            _buffer.Clear().Append(command);
-            OnCommandChanged?.Invoke(command);
+            _currentHistoryLine -= 1;
+            SetCommand();
         }
-
+        
         public void SetNextCommand()
         {
-            if (_currentHistoryLine >= _history.Count)
-                _currentHistoryLine = -1;
+            if (!HasHistory) return;
+            var line = _currentHistoryLine;
 
-            _currentHistoryLine = _currentHistoryLine switch
-                                  {
-                                      0   => 0,
-                                      < 0 => _history.Count - 1,
-                                      _   => _currentHistoryLine - 1
-                                  };
+            if (line < 0)
+            {
+                _currentHistoryLine = _history.Count - 1;
+                SetCommand();
+                return;
+            }
 
+            if (line + 1 < _history.Count)
+            {
+                _currentHistoryLine += 1;
+                SetCommand();
+                return;
+            }
+
+            _currentHistoryLine = 0;
+            SetCommand();
+        }
+        private void SetCommand()
+        {
             var command = _history[_currentHistoryLine];
             _buffer.Clear().Append(command);
             OnCommandChanged?.Invoke(command);
         }
-
 
         public CommandHolder Register(FileManagerCommand command)
         {
