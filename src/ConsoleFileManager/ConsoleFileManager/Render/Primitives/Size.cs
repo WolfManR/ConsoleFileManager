@@ -27,5 +27,8 @@ namespace ConsoleFileManager.Render.Primitives
         public static bool operator ==(Size left, Size right) => left.Equals(right);
 
         public static bool operator !=(Size left, Size right) => !(left == right);
+
+
+        public static Size operator -(Size self, int value) => new(self.Width - value, self.Height - value);
     }
 }

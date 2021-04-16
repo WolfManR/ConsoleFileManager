@@ -27,14 +27,10 @@ namespace ConsoleFileManager.Render.Controls
             _border.Add(new HorizontalLine(X + 1, Y + Size.Height - 1, Size.Width - 2, Alphabet.BorderHorizontal));
         }
 
-        public override (int x, int y, Size size) GetContentPlace()
+        public override ContentPlace GetContentPlace()
         {
-            var place = base.GetContentPlace();
-            place.size.Width -= 2;
-            place.size.Height -= 2;
-            place.x += 1;
-            place.y += 1;
-            return place;
+            var basePlace = base.GetContentPlace();
+            return new(basePlace.X + 1, basePlace.Y + 1, basePlace.Size - 2);
         }
 
         public override void Print()
