@@ -15,11 +15,11 @@ namespace ConsoleFileManager.Render.Presenters
                 Console.Write(new string(' ', width));
                 return;
             }
-            var nameWidth = width - 6;
+            var nameWidth = width - 14;
             var name = toPresent.Name.Length < nameWidth
                 ? toPresent.Name + new string(' ', nameWidth - toPresent.Name.Length)
                 : toPresent.Name[..nameWidth];
-            Console.Write("{0} {1,6}", name, toPresent.IsFile ? $"{toPresent.FileExtension}" : "dir");
+            Console.Write("{0} {1,-14}", name, toPresent.IsFile ? $"{toPresent.FileExtension}" : "dir");
         }
     }
 }

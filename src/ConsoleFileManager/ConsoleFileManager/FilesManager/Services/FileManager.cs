@@ -17,6 +17,8 @@ namespace ConsoleFileManager.FilesManager.Services
         public List<Info> Infos { get; set; } = new List<Info>();
         public Info Current { get; set; }
 
+        public event Action OnDirectoryChanged;
+
         public FileManager(Messenger messenger)
         {
             _messenger = messenger;
@@ -36,6 +38,8 @@ namespace ConsoleFileManager.FilesManager.Services
                 newDirectory = new DirectoryInfo(directory);
             }
             ChangeDirectory(newDirectory);
+
+            OnDirectoryChanged?.Invoke();
         }
 
         public void ChangeDirectory(DirectoryMove move, string path = null)
@@ -58,6 +62,8 @@ namespace ConsoleFileManager.FilesManager.Services
                 default:
                     throw new ArgumentOutOfRangeException(nameof(move), move, null);
             }
+
+            OnDirectoryChanged?.Invoke();
         }
 
         private void ChangeDirectory(DirectoryInfo directory)
