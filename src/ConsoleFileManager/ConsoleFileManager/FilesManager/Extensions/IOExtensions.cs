@@ -11,6 +11,13 @@ namespace ConsoleFileManager.FilesManager.Extensions
         public static Info ToInfo(this FileInfo file) =>
             new() { IsFile = true, Name = file.Name, Path = file.ToString(), FileExtension = file.Extension };
 
+        public static FileInfo ToFile(this Info self) =>
+            self.IsFile && File.Exists(self.Path) ? new FileInfo(self.Path) : null;
+
+        public static DirectoryInfo ToDirectory(this Info self) =>
+            !self.IsFile && Directory.Exists(self.Path) ? new DirectoryInfo(self.Path) : null;
+
+
         public static long GetLength(this FileSystemInfo self) =>
             self switch
             {

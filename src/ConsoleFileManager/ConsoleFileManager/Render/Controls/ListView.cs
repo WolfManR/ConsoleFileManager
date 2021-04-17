@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using ConsoleFileManager.FilesManager.Models;
+using ConsoleFileManager.Render.Presenters;
 using ConsoleFileManager.Render.Primitives;
 
 namespace ConsoleFileManager.Render.Controls
@@ -22,6 +23,7 @@ namespace ConsoleFileManager.Render.Controls
             set
             {
                 _contentPlace = value;
+                _x = value.X;
                 _topContentLine = value.Y;
                 _bottomContentLine = value.Y + value.Size.Height;
                 _pageSize = value.Size.Height;
@@ -29,6 +31,7 @@ namespace ConsoleFileManager.Render.Controls
             }
         }
 
+        private int _x;
         private int _pageFirstLine;
         private int _pageSize;
         private int _topContentLine;
@@ -37,12 +40,9 @@ namespace ConsoleFileManager.Render.Controls
         
 
         private Info[] _currentPage;
+        private LineInfoPresenter presenter = new();
 
-        public ListView(ContentPlace contentPlace, List<Info> output)
-        {
-            ContentPlace = contentPlace;
-            Output = output;
-        }
+        public ListView(ContentPlace contentPlace) => ContentPlace = contentPlace;
 
         private void ConfigurePage()
         {
@@ -102,14 +102,14 @@ namespace ConsoleFileManager.Render.Controls
         {
             Console.ForegroundColor = ConsoleColor.Black;
             Console.BackgroundColor = ConsoleColor.DarkGray;
-            //Presenter.Print(X, CurrentSelectedLine, ContentWidth, Selected);
+            presenter.Print(new(_x, CurrentSelectedLine, new(_contentWidth,1)), Selected);
             SetDefaultConsoleColor();
         }
 
         private void Deselect()
         {
             SetDefaultConsoleColor();
-            //Presenter.Print(X, CurrentSelectedLine, ContentWidth, Selected);
+            presenter.Print(new(_x, CurrentSelectedLine, new(_contentWidth, 1)), Selected);
         }
 
         private void SetDefaultConsoleColor()
@@ -125,11 +125,11 @@ namespace ConsoleFileManager.Render.Controls
             var (x, y, width, height) = _contentPlace;
             for (int i = y, j = 0; i <= height; i++, j++)
             {
-                string current = null;
+                Info current = null;
                 if(j < page.Length)
-                    current = page[j].ToString();
+                    current = page[j];
 
-                //Presenter.Print(x, i, width, current);
+                presenter.Print(new(x, i, new (width,1)), current);
             }
 
             if (CurrentLine == 0)
@@ -146,6 +146,10 @@ namespace ConsoleFileManager.Render.Controls
             ConfigurePage();
             Print();
             Select();
+        }
+
+        public void SetSelected(Info currentSelected)
+        {
         }
     }
 }
