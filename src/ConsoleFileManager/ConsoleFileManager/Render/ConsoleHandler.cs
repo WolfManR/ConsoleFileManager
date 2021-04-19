@@ -34,6 +34,53 @@ namespace ConsoleFileManager.Render
             ConfigureView();
         }
 
+
+        #region View Configuration
+
+        private void ConfigureView()
+        {
+            BufferHeight = WindowHeight = _configuration.WindowHeight;
+            BufferWidth = WindowWidth = _configuration.WindowWidth;
+
+            // Configure Controls
+
+            var (windowWidth, windowHeight) = (_configuration.WindowWidth - 1, _configuration.WindowHeight);
+            // Outer
+            _windowBorder = new Border(0, 0, windowWidth, windowHeight);
+
+            // Current Directory
+            var fileManagerWidth = (int)(windowWidth * 0.6);
+            var fileManagerHeight = (int)(windowHeight * 0.8);
+            _fileManagerBorder = new Border(1, 1, fileManagerWidth, fileManagerHeight) { Padding = (1, 0) };
+            _directoryView = new ListView(_fileManagerBorder.GetContentPlace());
+
+            // Command Line
+            CommandLineConfiguration.Width = fileManagerWidth - 2;
+
+            // Message Box
+            _messageBoxBorder = new Border(fileManagerWidth + 2, fileManagerHeight + 1, windowWidth - fileManagerWidth - 3,
+                windowHeight - fileManagerHeight - 2);
+            _messageBoxPlace = _messageBoxBorder.GetContentPlace();
+
+
+            // Details Place
+            _detailsPlace = new ContentPlace(fileManagerWidth + 4, 2,
+                new Size(windowWidth - fileManagerWidth - 4, fileManagerHeight - 2));
+        }
+
+        public void ShowView()
+        {
+            _windowBorder.Print();
+            _fileManagerBorder.Print();
+            _messageBoxBorder.Print();
+        }
+        
+        #endregion
+
+
+
+        #region Command Line
+
         public bool CanMoveCursorLeft() => _commandIndex > 0;
         public bool CanMoveCursorRight(int currentCommandLength) => _commandIndex <= currentCommandLength - 1;
 
@@ -87,44 +134,12 @@ namespace ConsoleFileManager.Render
             Write(toAppend);
         }
 
-        private void ConfigureView()
+        public void PrintCommand(string command)
         {
-            Console.BufferHeight = Console.WindowHeight = _configuration.WindowHeight;
-            Console.BufferWidth = Console.WindowWidth = _configuration.WindowWidth;
-
-            // Configure Controls
-
-            var (windowWidth, windowHeight) = (_configuration.WindowWidth - 1, _configuration.WindowHeight);
-            // Outer
-            _windowBorder = new Border(0, 0, windowWidth, windowHeight);
-
-            // Current Directory
-            var fileManagerWidth = (int)(windowWidth * 0.6);
-            var fileManagerHeight = (int)(windowHeight * 0.8);
-            _fileManagerBorder = new Border(1, 1, fileManagerWidth, fileManagerHeight) { Padding = (1, 0) };
-            _directoryView = new ListView(_fileManagerBorder.GetContentPlace());
-
-            // Command Line
-            CommandLineConfiguration.Width = fileManagerWidth - 2;
-
-            // Message Box
-            _messageBoxBorder = new Border(fileManagerWidth + 2, fileManagerHeight + 1, windowWidth - fileManagerWidth - 3,
-                windowHeight - fileManagerHeight - 2);
-            _messageBoxPlace = _messageBoxBorder.GetContentPlace();
-
-
-            // Details Place
-            _detailsPlace = new ContentPlace(fileManagerWidth + 4, 2,
-                new Size(windowWidth - fileManagerWidth - 4, fileManagerHeight - 2));
+            ClearCommandLine();
+            Write(command);
+            _commandIndex = command.Length;
         }
-
-        public void ShowView()
-        {
-            _windowBorder.Print();
-            _fileManagerBorder.Print();
-            _messageBoxBorder.Print();
-        }
-
 
         internal string Request(string[] message)
         {
@@ -149,6 +164,12 @@ namespace ConsoleFileManager.Render
                 Write(key.KeyChar);
             }
         }
+        
+        #endregion
+
+        
+
+        #region Message Box
 
         public void Report(string[] message)
         {
@@ -166,13 +187,36 @@ namespace ConsoleFileManager.Render
             var (width, maxLines) = _messageBoxPlace.Size;
             return (width, maxLines);
         }
+        
+        #endregion
 
-        public void PrintCommand(string command)
+        
+
+        #region Details Section
+
+        public void ShowDetails(Info info)
         {
-            ClearCommandLine();
-            Write(command);
-            _commandIndex = command.Length;
+            _detailsPresenter.Print(_detailsPlace, info);
+            ReturnCursor();
         }
+        
+        #endregion
+
+
+
+        #region Directory View
+
+        public void UpdateDirectoryView(List<Info> directoryInfo, Info currentSelected)
+        {
+            _directoryView.ChangeOutput(directoryInfo);
+            _directoryView.SetSelected(currentSelected);
+        }
+
+        #endregion
+
+
+
+        #region Helpers
 
         private Line[] PrepareBlock(string[] message, int x, int y, int width, int height)
         {
@@ -188,8 +232,7 @@ namespace ConsoleFileManager.Render
 
             return block;
         }
-
-
+        
         private static void PrintWithReturnToLastPosition(Action action)
         {
             var lastPosition = GetCursorPosition();
@@ -212,16 +255,6 @@ namespace ConsoleFileManager.Render
             }
         }
 
-        public void UpdateDirectoryView(List<Info> directoryInfo, Info currentSelected)
-        {
-            _directoryView.ChangeOutput(directoryInfo);
-            _directoryView.SetSelected(currentSelected);
-        }
-
-        public void ShowDetails(Info info)
-        {
-            _detailsPresenter.Print(_detailsPlace, info);
-            ReturnCursor();
-        }
+        #endregion
     }
 }
