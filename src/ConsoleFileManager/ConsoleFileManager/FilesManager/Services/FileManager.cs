@@ -148,7 +148,7 @@ namespace ConsoleFileManager.FilesManager.Services
             return attributes.HasFlag(FileAttributes.Directory);
         }
 
-        private string RebasePath(string path)
+        public string RebasePath(string path)
         {
             if (path is null) return null;
             if (Path.IsPathRooted(path)) return path;

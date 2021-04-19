@@ -57,6 +57,7 @@ namespace ConsoleFileManager.FilesManager
             .Register(new CopyPathCommand(_filesManager))
             .Register(new DeletePathCommand(_filesManager))
             .Register(new ExitCommand(this))
+            .Register(new ShowDetailsCommand(_filesManager,_consoleHandler))
         ;
 
         private void CommandModeCommandsRegister(CommandHolder holder) => holder

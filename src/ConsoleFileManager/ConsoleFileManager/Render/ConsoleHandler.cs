@@ -5,6 +5,7 @@ using System.Text;
 using ConsoleFileManager.FilesManager.Configurations;
 using ConsoleFileManager.FilesManager.Models;
 using ConsoleFileManager.Render.Controls;
+using ConsoleFileManager.Render.Presenters;
 using ConsoleFileManager.Render.Primitives;
 
 using static System.Console;
@@ -25,8 +26,8 @@ namespace ConsoleFileManager.Render
         private Border _fileManagerBorder;
         private Border _messageBoxBorder;
         private Border _windowBorder;
-
-
+        private ContentPlace _detailsPlace;
+        private DetailsInfoPresenter _detailsPresenter = new();
         public ConsoleHandler(Configuration configuration)
         {
             _configuration = configuration;
@@ -90,7 +91,7 @@ namespace ConsoleFileManager.Render
         {
             Console.BufferHeight = Console.WindowHeight = _configuration.WindowHeight;
             Console.BufferWidth = Console.WindowWidth = _configuration.WindowWidth;
-            
+
             // Configure Controls
 
             var (windowWidth, windowHeight) = (_configuration.WindowWidth - 1, _configuration.WindowHeight);
@@ -110,6 +111,11 @@ namespace ConsoleFileManager.Render
             _messageBoxBorder = new Border(fileManagerWidth + 2, fileManagerHeight + 1, windowWidth - fileManagerWidth - 3,
                 windowHeight - fileManagerHeight - 2);
             _messageBoxPlace = _messageBoxBorder.GetContentPlace();
+
+
+            // Details Place
+            _detailsPlace = new ContentPlace(fileManagerWidth + 4, 2,
+                new Size(windowWidth - fileManagerWidth - 4, fileManagerHeight - 2));
         }
 
         public void ShowView()
@@ -157,8 +163,8 @@ namespace ConsoleFileManager.Render
 
         public (int width, int maxLines) GetReportSize()
         {
-            var (width,maxLines) = _messageBoxPlace.Size;
-            return (width,maxLines);
+            var (width, maxLines) = _messageBoxPlace.Size;
+            return (width, maxLines);
         }
 
         public void PrintCommand(string command)
@@ -172,10 +178,10 @@ namespace ConsoleFileManager.Render
         {
             var block = new Line[height];
             var existLines = message.Length;
-            for (int i = 0,j = y; i < height; i++, j++)
+            for (int i = 0, j = y; i < height; i++, j++)
             {
-                var current = existLines <= i 
-                    ? new Line(x, j, width, null) 
+                var current = existLines <= i
+                    ? new Line(x, j, width, null)
                     : new Line(x, j, width, message[i]);
                 block[i] = current;
             }
@@ -193,23 +199,29 @@ namespace ConsoleFileManager.Render
 
         private static void PrintLine(Line line)
         {
-                SetCursorPosition(line.X, line.Y);
-                Write(line.Content);
+            SetCursorPosition(line.X, line.Y);
+            Write(line.Content);
         }
 
         private static void PrintBlock(Line[] block)
         {
-             for (var i = 0; i < block.Length; i++)
-             {
-                 var line = block[i];
+            for (var i = 0; i < block.Length; i++)
+            {
+                var line = block[i];
                 PrintLine(line);
-             }
+            }
         }
 
         public void UpdateDirectoryView(List<Info> directoryInfo, Info currentSelected)
         {
             _directoryView.ChangeOutput(directoryInfo);
             _directoryView.SetSelected(currentSelected);
+        }
+
+        public void ShowDetails(Info info)
+        {
+            _detailsPresenter.Print(_detailsPlace, info);
+            ReturnCursor();
         }
     }
 }
