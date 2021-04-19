@@ -1,6 +1,8 @@
 ﻿using System;
+using ConsoleFileManager.FilesManager.Commands;
 using ConsoleFileManager.FilesManager.Commands.CommandModeCommands;
 using ConsoleFileManager.FilesManager.Commands.FileManagerCommands;
+using ConsoleFileManager.FilesManager.Commands.ViewModeCommands;
 using ConsoleFileManager.FilesManager.Configurations;
 using ConsoleFileManager.FilesManager.Models;
 using ConsoleFileManager.FilesManager.Services;
@@ -37,6 +39,8 @@ namespace ConsoleFileManager.FilesManager
             _commandHolder.OnInputHandleModeChanged += CommandHolderOnOnInputHandleModeChanged;
             FileManagerCommandsRegister(_commandHolder);
             CommandModeCommandsRegister(_commandHolder);
+            ViewModeCommandsRegister(_commandHolder);
+            SharedCommandsRegister(_commandHolder);
         }
 
         private void FilesManagerOnDirectoryChanged()
@@ -68,6 +72,16 @@ namespace ConsoleFileManager.FilesManager
             .Register(new NextCommandCommand(_commandHolder))
             .Register(new PreviousCommandCommand(_commandHolder))
             .Register(new RemovePreviousCharFromCommandLineCommand(_commandHolder,_consoleHandler))
+        ;
+
+        private void ViewModeCommandsRegister(CommandHolder holder) => holder
+            .Register(new MoveCursorToNextLineCommand(_consoleHandler),InputHandleMode.List)
+            .Register(new MoveCursorToPreviousLineCommand(_consoleHandler), InputHandleMode.List)
+            .Register(new ShowSelectedLineInfoCommand(_filesManager,_consoleHandler),InputHandleMode.List)
+            ;
+
+        private void SharedCommandsRegister(CommandHolder holder) => holder
+            .Register(new SwitchInputHandleModeCommand(holder),InputHandleMode.Shared)
         ;
 
         private void _commandHolder_OnCommandExecuted()

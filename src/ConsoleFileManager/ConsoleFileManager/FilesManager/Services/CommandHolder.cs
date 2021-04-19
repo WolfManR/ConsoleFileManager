@@ -179,9 +179,22 @@ namespace ConsoleFileManager.FilesManager.Services
             return this;
         }
 
-        public CommandHolder Register(ConsoleKeyCommand command)
+        public CommandHolder Register(ConsoleKeyCommand command, InputHandleMode mode = InputHandleMode.CommandLine)
         {
-            _commandModeCommands.Add(command);
+            switch (mode)
+            {
+                case InputHandleMode.CommandLine:
+                    _commandModeCommands.Add(command);
+                    break;
+                case InputHandleMode.List:
+                    _viewModeCommands.Add(command);
+                    break;
+                default:
+                    _commandModeCommands.Add(command);
+                    _viewModeCommands.Add(command);
+                    break;
+            }
+
             return this;
         }
 

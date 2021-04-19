@@ -212,6 +212,21 @@ namespace ConsoleFileManager.Render
             _directoryView.SetSelected(currentSelected);
         }
 
+        public void NextLine()
+        {
+            _directoryView.Next();
+        }
+
+        public void PrevLine()
+        {
+            _directoryView.Prev();
+        }
+
+        public Info GetSelectedInfo()
+        {
+            return _directoryView.Selected;
+        }
+
         #endregion
 
 

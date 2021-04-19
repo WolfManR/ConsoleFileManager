@@ -2,6 +2,6 @@
 {
     public enum InputHandleMode
     {
-        CommandLine, List
+        CommandLine, List, Shared
     }
 }
