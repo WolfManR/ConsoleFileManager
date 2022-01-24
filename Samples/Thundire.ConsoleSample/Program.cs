@@ -1,2 +1,14 @@
-﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+﻿using Thundire.FileManager.Core;
+
+new FilesManagerSystem()
+    .Configure(config =>
+    {
+        config.OnClose = Close;
+    })
+    .Start();
+
+
+static void Close()
+{
+
+}

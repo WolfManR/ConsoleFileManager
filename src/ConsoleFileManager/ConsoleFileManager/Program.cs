@@ -6,12 +6,7 @@ namespace ConsoleFileManager
     {
         static void Main(string[] args)
         {
-            new FilesManagerSystem()
-                .Configure(config =>
-                {
-                    config.OnClose = Close;
-                })
-                .Start();
+            
         }
 
         private static void Close()

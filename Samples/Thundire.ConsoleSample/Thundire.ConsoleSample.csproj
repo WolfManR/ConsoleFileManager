@@ -7,4 +7,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Core\Thundire.FileManager.Core\Thundire.FileManager.Core.csproj" />
+  </ItemGroup>
+
 </Project>
