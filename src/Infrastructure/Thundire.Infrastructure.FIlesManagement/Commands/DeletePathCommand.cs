@@ -1,14 +1,15 @@
-﻿using Thundire.FileManager.Core.Exceptions;
+﻿using Thundire.FileManager.Core;
+using Thundire.FileManager.Core.Exceptions;
 using Thundire.FileManager.Core.Models;
 
-namespace Thundire.FileManager.Core.Commands.FileManagerCommands
+namespace Thundire.Infrastructure.FIlesManagement.Commands
 {
     public class DeletePathCommand : FileManagerCommand
     {
-        private readonly Services.FileManager _fileManager;
+        private readonly IFilesManager _fileManager;
 
 
-        public DeletePathCommand(Services.FileManager fileManager)
+        public DeletePathCommand(IFilesManager fileManager)
         {
             _fileManager = fileManager;
         }

@@ -1,14 +1,15 @@
-﻿using Thundire.FileManager.Core.Exceptions;
+﻿using Thundire.FileManager.Core;
+using Thundire.FileManager.Core.Exceptions;
 using Thundire.FileManager.Core.Models;
 
-namespace Thundire.FileManager.Core.Commands.FileManagerCommands
+namespace Thundire.Infrastructure.FIlesManagement.Commands
 {
     public class CopyPathCommand : FileManagerCommand
     {
-        private readonly Services.FileManager _fileManager;
+        private readonly IFilesManager _fileManager;
 
 
-        public CopyPathCommand(Services.FileManager fileManager) => _fileManager = fileManager;
+        public CopyPathCommand(IFilesManager fileManager) => _fileManager = fileManager;
 
 
         public override string Name { get; } = "Copy path";

@@ -1,12 +1,13 @@
-﻿using Thundire.FileManager.Core.Models;
+﻿using Thundire.FileManager.Core;
+using Thundire.FileManager.Core.Models;
 
-namespace Thundire.FileManager.Core.Commands.FileManagerCommands
+namespace Thundire.Infrastructure.FIlesManagement.Commands
 {
     public class ExitCommand : FileManagerCommand
     {
-        private readonly FilesManagerSystem _system;
+        private readonly IFilesManagementSystem _system;
 
-        public ExitCommand(FilesManagerSystem system) => _system = system;
+        public ExitCommand(IFilesManagementSystem system) => _system = system;
 
         public override string Name { get; } = "Exit";
         public override string Description { get; } = "Exit";

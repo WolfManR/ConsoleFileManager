@@ -1,11 +1,13 @@
-﻿using Thundire.FileManager.Core.Exceptions;
+﻿using Thundire.FileManager.Core;
+using Thundire.FileManager.Core.Exceptions;
+using Thundire.FileManager.Core.Extensions;
 using Thundire.FileManager.Core.Models;
 
-namespace Thundire.FileManager.Core.Services
+namespace Thundire.Infrastructure.FIlesManagement
 {
-    public class FileManager
+    public class FileManager : IFilesManager
     {
-        private readonly Messenger _messenger;
+        private readonly INotifyService _messenger;
 
 
         public string CurrentDirectoryPath { get; set; }
@@ -15,7 +17,7 @@ namespace Thundire.FileManager.Core.Services
 
         public event Action OnDirectoryChanged;
 
-        public FileManager(Messenger messenger)
+        public FileManager(INotifyService messenger)
         {
             _messenger = messenger;
         }

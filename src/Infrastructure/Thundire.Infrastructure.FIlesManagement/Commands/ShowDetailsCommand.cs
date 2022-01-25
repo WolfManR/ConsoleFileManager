@@ -1,14 +1,15 @@
-﻿using Thundire.FileManager.Core.Extensions;
+﻿using Thundire.FileManager.Core;
+using Thundire.FileManager.Core.Extensions;
 using Thundire.FileManager.Core.Models;
 
-namespace Thundire.FileManager.Core.Commands.FileManagerCommands
+namespace Thundire.Infrastructure.FIlesManagement.Commands
 {
     public class ShowDetailsCommand : FileManagerCommand
     {
-        private readonly Services.FileManager _fileManager;
-        private readonly ConsoleHandler _handler;
+        private readonly IFilesManager _fileManager;
+        private readonly IRenderer _handler;
 
-        public ShowDetailsCommand(Services.FileManager fileManager, ConsoleHandler handler)
+        public ShowDetailsCommand(IFilesManager fileManager, IRenderer handler)
         {
             _fileManager = fileManager;
             _handler = handler;
