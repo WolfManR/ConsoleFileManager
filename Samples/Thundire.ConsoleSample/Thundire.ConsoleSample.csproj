@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Core.UI\Thundire.FileManager.Core.ConsoleUI\Thundire.FileManager.Core.ConsoleUI.csproj" />
+    <ProjectReference Include="..\..\src\Core\Thundire.FileManager.Core\Thundire.FileManager.Core.csproj" />
+    <ProjectReference Include="..\..\src\Infrastructure\Thundire.Infrastructure.FIlesManagement\Thundire.Infrastructure.FIlesManagement.csproj" />
+  </ItemGroup>
+
+</Project>

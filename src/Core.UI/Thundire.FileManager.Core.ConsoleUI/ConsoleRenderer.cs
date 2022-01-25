@@ -1,0 +1,272 @@
+﻿using System.Text;
+using Thundire.FileManager.Core.Configurations;
+using Thundire.FileManager.Core.ConsoleUI.Controls;
+using Thundire.FileManager.Core.ConsoleUI.Presenters;
+using Thundire.FileManager.Core.ConsoleUI.Primitives;
+using Thundire.FileManager.Core.Models;
+using static System.Console;
+
+
+namespace Thundire.FileManager.Core.ConsoleUI
+{
+    public class ConsoleRenderer : IConsoleRenderer
+    {
+        private readonly Configuration _configuration;
+        private readonly CommandLineConfiguration _commandLineConfiguration;
+        private int _commandIndex;
+
+        private ContentPlace _messageBoxPlace;
+
+        private ListView _directoryView;
+
+        private Border _fileManagerBorder;
+        private Border _messageBoxBorder;
+        private Border _windowBorder;
+        private ContentPlace _detailsPlace;
+        private DetailsInfoPresenter _detailsPresenter = new();
+        public ConsoleRenderer(Configuration configuration, CommandLineConfiguration commandLineConfiguration)
+        {
+            _configuration = configuration;
+            _commandLineConfiguration = commandLineConfiguration;
+            ConfigureView();
+        }
+
+
+        #region View Configuration
+
+        private void ConfigureView()
+        {
+            BufferHeight = WindowHeight = _configuration.WindowHeight;
+            BufferWidth = WindowWidth = _configuration.WindowWidth;
+
+            // Configure Controls
+
+            var (windowWidth, windowHeight) = (_configuration.WindowWidth - 1, _configuration.WindowHeight);
+            // Outer
+            _windowBorder = new Border(0, 0, windowWidth, windowHeight);
+
+            // Current Directory
+            var fileManagerWidth = (int)(windowWidth * 0.6);
+            var fileManagerHeight = (int)(windowHeight * 0.8);
+            _fileManagerBorder = new Border(1, 1, fileManagerWidth, fileManagerHeight) { Padding = (1, 0) };
+            _directoryView = new ListView(_fileManagerBorder.GetContentPlace());
+
+            // Command Line
+            _commandLineConfiguration.Width = fileManagerWidth - 2;
+
+            // Message Box
+            _messageBoxBorder = new Border(fileManagerWidth + 2, fileManagerHeight + 1, windowWidth - fileManagerWidth - 3,
+                windowHeight - fileManagerHeight - 2);
+            _messageBoxPlace = _messageBoxBorder.GetContentPlace();
+
+
+            // Details Place
+            _detailsPlace = new ContentPlace(fileManagerWidth + 4, 2,
+                new Size(windowWidth - fileManagerWidth - 4, fileManagerHeight - 2));
+        }
+
+        public void ShowView()
+        {
+            _windowBorder.Print();
+            _fileManagerBorder.Print();
+            _messageBoxBorder.Print();
+        }
+        
+        #endregion
+
+
+
+        #region Command Line
+
+        public bool CanMoveCursorLeft() => _commandIndex > 0;
+        public bool CanMoveCursorRight(int currentCommandLength) => _commandIndex <= currentCommandLength - 1;
+
+        public void ReturnCursorToCommandLineStartPosition()
+        {
+            SetCursorPosition(_commandLineConfiguration.X, _commandLineConfiguration.Y);
+        }
+
+        public void ClearCommandLine()
+        {
+            ReturnCursorToCommandLineStartPosition();
+            Write(new string(' ', _commandLineConfiguration.Width));
+            ReturnCursorToCommandLineStartPosition();
+            _commandIndex = 0;
+        }
+
+        public void ReturnCursor()
+        {
+            if (CursorTop != _commandLineConfiguration.Y)
+                ReturnCursorToCommandLineStartPosition();
+            if (_commandIndex != 0)
+                CursorLeft = _commandLineConfiguration.X + _commandIndex;
+        }
+
+        public int MoveCursorRight()
+        {
+            CursorLeft++;
+            _commandIndex++;
+            return _commandIndex;
+        }
+
+        public int MoveCursorLeft()
+        {
+            CursorLeft--;
+            _commandIndex--;
+            return _commandIndex;
+        }
+
+        public void ReplaceCommandLineText(int index, string toReplace)
+        {
+            var startPoint = GetCursorPosition();
+            ReturnCursorToCommandLineStartPosition();
+            CursorLeft += index;
+            Write(toReplace);
+            SetCursorPosition(startPoint.Left, startPoint.Top);
+        }
+
+        public void AppendCharToCommandLine(char toAppend)
+        {
+            _commandIndex++;
+            Write(toAppend);
+        }
+
+        public void PrintCommand(string command)
+        {
+            ClearCommandLine();
+            Write(command);
+            _commandIndex = command.Length;
+        }
+
+        public string Request(string[] message)
+        {
+            Report(message);
+
+            ClearCommandLine();
+            return GetResponse();
+        }
+
+        private string GetResponse()
+        {
+            var width = _commandLineConfiguration.Width;
+            StringBuilder buffer = new();
+            while (true)
+            {
+                var key = ReadKey(true);
+                if (key.Key == ConsoleKey.Enter)
+                    return buffer.ToString();
+                if (buffer.Length + 1 == width)
+                    continue;
+                buffer.Append(key.KeyChar);
+                Write(key.KeyChar);
+            }
+        }
+        
+        #endregion
+
+        
+
+        #region Message Box
+
+        public void Report(string[] message)
+        {
+            if (message.Length <= 0) throw new ArgumentException("Message was empty");
+            var (startX, startY, width, height) = _messageBoxPlace;
+
+            var block = PrepareBlock(message, startX, startY, width, height);
+            PrintBlock(block);
+
+            ReturnCursor();
+        }
+
+        public (int width, int maxLines) GetReportSize()
+        {
+            var (width, maxLines) = _messageBoxPlace.Size;
+            return (width, maxLines);
+        }
+        
+        #endregion
+
+        
+
+        #region Details Section
+
+        public void ShowDetails(Info info)
+        {
+            _detailsPresenter.Print(_detailsPlace, info);
+            ReturnCursor();
+        }
+        
+        #endregion
+
+
+
+        #region Directory View
+
+        public void UpdateDirectoryView(List<Info> directoryInfo, Info currentSelected)
+        {
+            _directoryView.ChangeOutput(directoryInfo);
+            _directoryView.SetSelected(currentSelected);
+        }
+
+        public void NextLine()
+        {
+            _directoryView.Next();
+        }
+
+        public void PrevLine()
+        {
+            _directoryView.Prev();
+        }
+
+        public Info GetSelectedInfo()
+        {
+            return _directoryView.Selected;
+        }
+
+        #endregion
+
+
+
+        #region Helpers
+
+        private Line[] PrepareBlock(string[] message, int x, int y, int width, int height)
+        {
+            var block = new Line[height];
+            var existLines = message.Length;
+            for (int i = 0, j = y; i < height; i++, j++)
+            {
+                var current = existLines <= i
+                    ? new Line(x, j, width, null)
+                    : new Line(x, j, width, message[i]);
+                block[i] = current;
+            }
+
+            return block;
+        }
+        
+        private static void PrintWithReturnToLastPosition(Action action)
+        {
+            var lastPosition = GetCursorPosition();
+            action?.Invoke();
+            SetCursorPosition(lastPosition.Left, lastPosition.Top);
+        }
+
+        private static void PrintLine(Line line)
+        {
+            SetCursorPosition(line.X, line.Y);
+            Write(line.Content);
+        }
+
+        private static void PrintBlock(Line[] block)
+        {
+            for (var i = 0; i < block.Length; i++)
+            {
+                var line = block[i];
+                PrintLine(line);
+            }
+        }
+
+        #endregion
+    }
+}
