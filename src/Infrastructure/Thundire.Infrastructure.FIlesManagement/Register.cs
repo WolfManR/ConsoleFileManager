@@ -5,15 +5,23 @@ namespace Thundire.Infrastructure.FIlesManagement;
 
 public static class Register
 {
-    public static void FileManagerCommandsRegister(
+    public static ThundireFileManager SetFileManager(this ThundireFileManager self)
+    {
+        self.FilesManager = new FileManager();
+        self.OnInitialized(manager =>
+        {
+            manager.CommandsRepository.FileManagerCommandsRegister(manager.FilesManager, manager.Renderer);
+        });
+        return self;
+    }
+
+    private static void FileManagerCommandsRegister(
         this ICommandsRepository holder,
         IFilesManager filesManager,
-        IRenderer renderer,
-        IFilesManagementSystem filesManagementSystem) => holder
+        IRenderer renderer) => holder
         .Register(new ChangeDirectoryCommand(filesManager))
         .Register(new CopyPathCommand(filesManager))
         .Register(new DeletePathCommand(filesManager))
-        .Register(new ExitCommand(filesManagementSystem))
         .Register(new ShowDetailsCommand(filesManager, renderer))
     ;
 }

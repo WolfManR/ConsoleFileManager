@@ -4,9 +4,9 @@ using Thundire.FileManager.Core.Models;
 
 namespace Thundire.FileManager.Core.ConsoleUI
 {
-    public class CommandHolder : ICommandsRepository
+    public class CommandsRepository : IConsoleCommandsRepository
     {
-        private readonly Messenger _messenger;
+        private readonly INotifyService _messenger;
 
         private readonly List<FileManagerCommand> _fileManagerCommands = new();
         private readonly List<ConsoleKeyCommand> _commandModeCommands = new();
@@ -27,7 +27,7 @@ namespace Thundire.FileManager.Core.ConsoleUI
         public event Action OnCommandExecuted;
         public event Action<InputHandleMode> OnInputHandleModeChanged;
 
-        public CommandHolder(InputHandleMode inputHandleMode, Messenger messenger)
+        public CommandsRepository(InputHandleMode inputHandleMode, INotifyService messenger)
         {
             this._inputHandleMode = inputHandleMode;
             _messenger = messenger;
@@ -177,7 +177,7 @@ namespace Thundire.FileManager.Core.ConsoleUI
             return this;
         }
 
-        public CommandHolder Register(ConsoleKeyCommand command, InputHandleMode mode = InputHandleMode.CommandLine)
+        public CommandsRepository Register(ConsoleKeyCommand command, InputHandleMode mode = InputHandleMode.CommandLine)
         {
             switch (mode)
             {

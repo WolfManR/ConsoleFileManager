@@ -7,20 +7,12 @@ namespace Thundire.Infrastructure.FIlesManagement
 {
     public class FileManager : IFilesManager
     {
-        private readonly INotifyService _messenger;
-
-
         public string CurrentDirectoryPath { get; set; }
         public DirectoryInfo CurrentDirectory { get; set; }
         public List<Info> Infos { get; set; } = new List<Info>();
         public Info Current { get; set; }
 
         public event Action OnDirectoryChanged;
-
-        public FileManager(INotifyService messenger)
-        {
-            _messenger = messenger;
-        }
 
         public void ChangeDirectory(string path)
         {
@@ -85,13 +77,13 @@ namespace Thundire.Infrastructure.FIlesManagement
                 throw ExceptionsFactory.PathNotExist(from);
             if (File.Exists(to))
             {
-                while (true)
-                {
-                    var response = _messenger.Confirm("Output file already exist, rewrite it? (y,n): ");
-                    if (!response)
-                        throw ExceptionsFactory.SamePathAlreadyExist(to, nameof(to));
-                    break;
-                }
+                //while (true)
+                //{
+                //    var response = _messenger.Confirm("Output file already exist, rewrite it? (y,n): ");
+                //    if (!response)
+                //        throw ExceptionsFactory.SamePathAlreadyExist(to, nameof(to));
+                //    break;
+                //}
                 File.Copy(from, to, true);
             }
 

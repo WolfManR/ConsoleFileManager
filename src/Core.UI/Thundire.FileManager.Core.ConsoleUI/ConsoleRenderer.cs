@@ -9,7 +9,7 @@ using static System.Console;
 
 namespace Thundire.FileManager.Core.ConsoleUI
 {
-    public partial class ConsoleHandler : IRenderer
+    public class ConsoleRenderer : IConsoleRenderer
     {
         private readonly Configuration _configuration;
         private readonly CommandLineConfiguration _commandLineConfiguration;
@@ -24,7 +24,7 @@ namespace Thundire.FileManager.Core.ConsoleUI
         private Border _windowBorder;
         private ContentPlace _detailsPlace;
         private DetailsInfoPresenter _detailsPresenter = new();
-        public ConsoleHandler(Configuration configuration, CommandLineConfiguration commandLineConfiguration)
+        public ConsoleRenderer(Configuration configuration, CommandLineConfiguration commandLineConfiguration)
         {
             _configuration = configuration;
             _commandLineConfiguration = commandLineConfiguration;
@@ -138,7 +138,7 @@ namespace Thundire.FileManager.Core.ConsoleUI
             _commandIndex = command.Length;
         }
 
-        internal string Request(string[] message)
+        public string Request(string[] message)
         {
             Report(message);
 

@@ -1,10 +1,10 @@
 ﻿namespace Thundire.FileManager.Core.ConsoleUI
 {
-    public class Messenger
+    public class Messenger : INotifyService
     {
-        private readonly ConsoleHandler _consoleHandler;
+        private readonly IConsoleRenderer _consoleHandler;
 
-        public Messenger(ConsoleHandler consoleHandler) => _consoleHandler = consoleHandler;
+        public Messenger(IConsoleRenderer consoleHandler) => _consoleHandler = consoleHandler;
 
 
         public bool Confirm(string message)

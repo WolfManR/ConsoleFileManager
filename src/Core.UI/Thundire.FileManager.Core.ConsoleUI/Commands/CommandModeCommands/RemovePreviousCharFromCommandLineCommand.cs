@@ -2,10 +2,10 @@
 {
     public class RemovePreviousCharFromCommandLineCommand : ConsoleKeyCommand
     {
-        private readonly CommandHolder _holder;
-        private readonly ConsoleHandler _handler;
+        private readonly IConsoleCommandsRepository _holder;
+        private readonly IConsoleRenderer _handler;
 
-        public RemovePreviousCharFromCommandLineCommand(CommandHolder holder, ConsoleHandler handler)
+        public RemovePreviousCharFromCommandLineCommand(IConsoleCommandsRepository holder, IConsoleRenderer handler)
         {
             _holder = holder;
             _handler = handler;

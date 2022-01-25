@@ -1,11 +1,13 @@
 ﻿using Thundire.FileManager.Core;
+using Thundire.FileManager.Core.ConsoleUI;
+using Thundire.Infrastructure.FIlesManagement;
 
-new FilesManagerSystem()
-    .Configure(config =>
+new ThundireFileManager()
     {
-        config.OnClose = Close;
-    })
-    .Start();
+        Configuration = new() { OnClose = Close },
+    }
+    .SetFileManager()
+    .StartConsole();
 
 
 static void Close()

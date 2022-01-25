@@ -2,9 +2,9 @@
 {
     public class SwitchInputHandleModeCommand: ConsoleKeyCommand
     {
-        private readonly CommandHolder _holder;
+        private readonly IConsoleCommandsRepository _holder;
 
-        public SwitchInputHandleModeCommand(CommandHolder holder)
+        public SwitchInputHandleModeCommand(IConsoleCommandsRepository holder)
         {
             _holder = holder;
         }

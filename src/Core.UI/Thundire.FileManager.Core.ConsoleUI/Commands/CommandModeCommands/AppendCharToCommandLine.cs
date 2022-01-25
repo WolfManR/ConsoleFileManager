@@ -2,10 +2,10 @@
 {
     public class AppendCharToCommandLineCommand : ConsoleKeyCommand
     {
-        private readonly CommandHolder _holder;
-        private readonly ConsoleHandler _handler;
+        private readonly IConsoleCommandsRepository _holder;
+        private readonly IConsoleRenderer _handler;
 
-        public AppendCharToCommandLineCommand(CommandHolder holder, ConsoleHandler handler)
+        public AppendCharToCommandLineCommand(IConsoleCommandsRepository holder, IConsoleRenderer handler)
         {
             _holder = holder;
             _handler = handler;

@@ -2,9 +2,9 @@
 {
     public class MoveCursorLeftCommand : ConsoleKeyCommand
     {
-        private readonly ConsoleHandler _handler;
+        private readonly IConsoleRenderer _handler;
 
-        public MoveCursorLeftCommand(ConsoleHandler handler) => _handler = handler;
+        public MoveCursorLeftCommand(IConsoleRenderer handler) => _handler = handler;
 
 
         public override bool CanHandle(ConsoleKeyInfo keyInfo) => 

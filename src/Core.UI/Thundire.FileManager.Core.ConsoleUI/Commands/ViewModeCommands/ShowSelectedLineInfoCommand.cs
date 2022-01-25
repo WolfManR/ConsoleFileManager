@@ -2,9 +2,9 @@
 {
     public class ShowSelectedLineInfoCommand : ConsoleKeyCommand
     {
-        private readonly ConsoleHandler _handler;
+        private readonly IConsoleRenderer _handler;
 
-        public ShowSelectedLineInfoCommand(ConsoleHandler handler)
+        public ShowSelectedLineInfoCommand(IConsoleRenderer handler)
         {
             _handler = handler;
         }

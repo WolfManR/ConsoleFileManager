@@ -1,6 +1,7 @@
 ﻿namespace Thundire.FileManager.Core;
 
-public interface IFilesManagementSystem
+public interface ILifeTimeService
 {
     void Exit();
+    void Start();
 }

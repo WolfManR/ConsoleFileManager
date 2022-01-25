@@ -2,9 +2,9 @@
 {
     public class NextCommandCommand : ConsoleKeyCommand
     {
-        private readonly CommandHolder _holder;
+        private readonly IConsoleCommandsRepository _holder;
 
-        public NextCommandCommand(CommandHolder holder) => _holder = holder;
+        public NextCommandCommand(IConsoleCommandsRepository holder) => _holder = holder;
 
         public override bool CanHandle(ConsoleKeyInfo keyInfo) => keyInfo.Key == ConsoleKey.DownArrow && _holder.HasHistory;
 

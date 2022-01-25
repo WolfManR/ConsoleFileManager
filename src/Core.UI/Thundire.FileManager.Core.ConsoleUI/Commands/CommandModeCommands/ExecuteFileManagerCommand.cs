@@ -2,9 +2,9 @@
 {
     public class ExecuteFileManagerCommand : ConsoleKeyCommand
     {
-        private readonly CommandHolder _holder;
+        private readonly IConsoleCommandsRepository _holder;
 
-        public ExecuteFileManagerCommand(CommandHolder holder) => _holder = holder;
+        public ExecuteFileManagerCommand(IConsoleCommandsRepository holder) => _holder = holder;
 
 
         public override bool CanHandle(ConsoleKeyInfo keyInfo) => keyInfo.Key == ConsoleKey.Enter && _holder.HasCommandLine;

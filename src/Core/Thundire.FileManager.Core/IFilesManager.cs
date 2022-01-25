@@ -15,4 +15,6 @@ public interface IFilesManager
     string RebasePath(string path);
 
     event Action OnDirectoryChanged;
+    List<Info> Infos { get; set; }
+    Info Current { get; set; }
 }

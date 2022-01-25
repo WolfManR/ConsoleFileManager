@@ -2,9 +2,9 @@
 {
     public class MoveCursorToPreviousLineCommand : ConsoleKeyCommand
     {
-        private readonly ConsoleHandler _handler;
+        private readonly IConsoleRenderer _handler;
 
-        public MoveCursorToPreviousLineCommand(ConsoleHandler handler)
+        public MoveCursorToPreviousLineCommand(IConsoleRenderer handler)
         {
             _handler = handler;
         }
