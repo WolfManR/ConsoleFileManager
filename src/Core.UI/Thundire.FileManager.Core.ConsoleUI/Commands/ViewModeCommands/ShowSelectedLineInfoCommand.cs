@@ -1,15 +1,11 @@
-﻿using Thundire.FileManager.Core.Models;
-
-namespace Thundire.FileManager.Core.Commands.ViewModeCommands
+﻿namespace Thundire.FileManager.Core.ConsoleUI.Commands.ViewModeCommands
 {
     public class ShowSelectedLineInfoCommand : ConsoleKeyCommand
     {
-        private readonly Services.FileManager _fileManager;
         private readonly ConsoleHandler _handler;
 
-        public ShowSelectedLineInfoCommand(Services.FileManager fileManager,ConsoleHandler handler)
+        public ShowSelectedLineInfoCommand(ConsoleHandler handler)
         {
-            _fileManager = fileManager;
             _handler = handler;
         }
         public override bool CanHandle(ConsoleKeyInfo keyInfo) => keyInfo.Key == ConsoleKey.RightArrow;

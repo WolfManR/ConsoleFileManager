@@ -1,6 +1,4 @@
-﻿using Thundire.FileManager.Core.Models;
-
-namespace Thundire.FileManager.Core.Commands.CommandModeCommands
+﻿namespace Thundire.FileManager.Core.ConsoleUI.Commands.CommandModeCommands
 {
     public class MoveCursorLeftCommand : ConsoleKeyCommand
     {

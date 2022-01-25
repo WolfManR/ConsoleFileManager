@@ -1,7 +1,4 @@
-﻿using Thundire.FileManager.Core.Models;
-using Thundire.FileManager.Core.Services;
-
-namespace Thundire.FileManager.Core.Commands.CommandModeCommands
+﻿namespace Thundire.FileManager.Core.ConsoleUI.Commands.CommandModeCommands
 {
     public class RemovePreviousCharFromCommandLineCommand : ConsoleKeyCommand
     {

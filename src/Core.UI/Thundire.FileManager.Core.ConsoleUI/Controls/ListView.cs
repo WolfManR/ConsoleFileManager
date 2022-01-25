@@ -1,5 +1,6 @@
 ﻿using Thundire.FileManager.Core.ConsoleUI.Presenters;
 using Thundire.FileManager.Core.ConsoleUI.Primitives;
+using Thundire.FileManager.Core.Models;
 
 namespace Thundire.FileManager.Core.ConsoleUI.Controls
 {

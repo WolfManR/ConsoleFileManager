@@ -1,4 +1,4 @@
-﻿namespace Thundire.FileManager.Core.Models
+﻿namespace Thundire.FileManager.Core.ConsoleUI.Commands
 {
     public abstract class ConsoleKeyCommand
     {

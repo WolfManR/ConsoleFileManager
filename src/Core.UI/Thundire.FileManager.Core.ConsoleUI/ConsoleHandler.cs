@@ -1,16 +1,18 @@
 ﻿using System.Text;
+using Thundire.FileManager.Core.Configurations;
 using Thundire.FileManager.Core.ConsoleUI.Controls;
 using Thundire.FileManager.Core.ConsoleUI.Presenters;
 using Thundire.FileManager.Core.ConsoleUI.Primitives;
+using Thundire.FileManager.Core.Models;
 using static System.Console;
 
 
 namespace Thundire.FileManager.Core.ConsoleUI
 {
-    public partial class ConsoleHandler
+    public partial class ConsoleHandler : IRenderer
     {
         private readonly Configuration _configuration;
-        private CommandLineConfiguration CommandLineConfiguration => _configuration.CommandLineConfiguration;
+        private readonly CommandLineConfiguration _commandLineConfiguration;
         private int _commandIndex;
 
         private ContentPlace _messageBoxPlace;
@@ -22,9 +24,10 @@ namespace Thundire.FileManager.Core.ConsoleUI
         private Border _windowBorder;
         private ContentPlace _detailsPlace;
         private DetailsInfoPresenter _detailsPresenter = new();
-        public ConsoleHandler(Configuration configuration)
+        public ConsoleHandler(Configuration configuration, CommandLineConfiguration commandLineConfiguration)
         {
             _configuration = configuration;
+            _commandLineConfiguration = commandLineConfiguration;
             ConfigureView();
         }
 
@@ -49,7 +52,7 @@ namespace Thundire.FileManager.Core.ConsoleUI
             _directoryView = new ListView(_fileManagerBorder.GetContentPlace());
 
             // Command Line
-            CommandLineConfiguration.Width = fileManagerWidth - 2;
+            _commandLineConfiguration.Width = fileManagerWidth - 2;
 
             // Message Box
             _messageBoxBorder = new Border(fileManagerWidth + 2, fileManagerHeight + 1, windowWidth - fileManagerWidth - 3,
@@ -80,23 +83,23 @@ namespace Thundire.FileManager.Core.ConsoleUI
 
         public void ReturnCursorToCommandLineStartPosition()
         {
-            SetCursorPosition(CommandLineConfiguration.X, CommandLineConfiguration.Y);
+            SetCursorPosition(_commandLineConfiguration.X, _commandLineConfiguration.Y);
         }
 
         public void ClearCommandLine()
         {
             ReturnCursorToCommandLineStartPosition();
-            Write(new string(' ', CommandLineConfiguration.Width));
+            Write(new string(' ', _commandLineConfiguration.Width));
             ReturnCursorToCommandLineStartPosition();
             _commandIndex = 0;
         }
 
         public void ReturnCursor()
         {
-            if (CursorTop != CommandLineConfiguration.Y)
+            if (CursorTop != _commandLineConfiguration.Y)
                 ReturnCursorToCommandLineStartPosition();
             if (_commandIndex != 0)
-                CursorLeft = CommandLineConfiguration.X + _commandIndex;
+                CursorLeft = _commandLineConfiguration.X + _commandIndex;
         }
 
         public int MoveCursorRight()
@@ -145,7 +148,7 @@ namespace Thundire.FileManager.Core.ConsoleUI
 
         private string GetResponse()
         {
-            var width = CommandLineConfiguration.Width;
+            var width = _commandLineConfiguration.Width;
             StringBuilder buffer = new();
             while (true)
             {

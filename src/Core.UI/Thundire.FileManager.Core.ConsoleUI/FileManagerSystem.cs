@@ -1,18 +1,17 @@
-﻿using Thundire.FileManager.Core.Commands;
-using Thundire.FileManager.Core.Commands.CommandModeCommands;
-using Thundire.FileManager.Core.Commands.FileManagerCommands;
-using Thundire.FileManager.Core.Commands.ViewModeCommands;
-using Thundire.FileManager.Core.Configurations;
+﻿using Thundire.FileManager.Core.Configurations;
+using Thundire.FileManager.Core.ConsoleUI.Commands;
+using Thundire.FileManager.Core.ConsoleUI.Commands.CommandModeCommands;
+using Thundire.FileManager.Core.ConsoleUI.Commands.ViewModeCommands;
 using Thundire.FileManager.Core.Models;
-using Thundire.FileManager.Core.Services;
 
-namespace Thundire.FileManager.Core
+namespace Thundire.FileManager.Core.ConsoleUI
 {
     public class FilesManagerSystem
     {
         private readonly Messenger _messenger;
-        private readonly Services.FileManager _filesManager;
+        private readonly IFilesManager _filesManager;
         private readonly Configuration _config;
+        private readonly CommandLineConfiguration _commandLineConfiguration;
         private readonly CommandHolder _commandHolder;
         private readonly ConsoleHandler _consoleHandler;
         private Action _onClose;
@@ -21,13 +20,13 @@ namespace Thundire.FileManager.Core
         public FilesManagerSystem()
         {
             _config = new();
-            _config.CommandLineConfiguration = new()
+            _commandLineConfiguration = new()
             {
                 X = 4,
                 Y = _config.WindowHeight - 4
             };
 
-            _consoleHandler = new(_config);
+            _consoleHandler = new(_config, _commandLineConfiguration);
             _messenger = new(_consoleHandler);
             _filesManager = new(_messenger);
             _filesManager.OnDirectoryChanged += FilesManagerOnDirectoryChanged;
@@ -54,13 +53,7 @@ namespace Thundire.FileManager.Core
                 _consoleHandler.ReturnCursor();
         }
 
-        private void FileManagerCommandsRegister(CommandHolder holder) => holder
-            .Register(new ChangeDirectoryCommand(_filesManager))
-            .Register(new CopyPathCommand(_filesManager))
-            .Register(new DeletePathCommand(_filesManager))
-            .Register(new ExitCommand(this))
-            .Register(new ShowDetailsCommand(_filesManager,_consoleHandler))
-        ;
+        
 
         private void CommandModeCommandsRegister(CommandHolder holder) => holder
             .Register(new AppendCharToCommandLineCommand(_commandHolder,_consoleHandler))

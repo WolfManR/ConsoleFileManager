@@ -1,6 +1,4 @@
-﻿using Thundire.FileManager.Core.Models;
-
-namespace Thundire.FileManager.Core.Commands.ViewModeCommands
+﻿namespace Thundire.FileManager.Core.ConsoleUI.Commands.ViewModeCommands
 {
     public class MoveCursorToPreviousLineCommand : ConsoleKeyCommand
     {

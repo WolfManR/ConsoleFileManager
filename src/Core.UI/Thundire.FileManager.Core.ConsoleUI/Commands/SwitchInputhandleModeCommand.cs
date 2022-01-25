@@ -1,7 +1,4 @@
-﻿using Thundire.FileManager.Core.Models;
-using Thundire.FileManager.Core.Services;
-
-namespace Thundire.FileManager.Core.Commands
+﻿namespace Thundire.FileManager.Core.ConsoleUI.Commands
 {
     public class SwitchInputHandleModeCommand: ConsoleKeyCommand
     {

@@ -1,4 +1,4 @@
-﻿namespace Thundire.FileManager.Core.Configurations
+﻿namespace Thundire.FileManager.Core.ConsoleUI
 {
     public class CommandLineConfiguration
     {

@@ -1,4 +1,4 @@
-﻿namespace Thundire.FileManager.Core.Services
+﻿namespace Thundire.FileManager.Core.ConsoleUI
 {
     public class Messenger
     {

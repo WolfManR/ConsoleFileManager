@@ -1,9 +1,10 @@
 ﻿using System.Text;
+using Thundire.FileManager.Core.ConsoleUI.Commands;
 using Thundire.FileManager.Core.Models;
 
-namespace Thundire.FileManager.Core.Services
+namespace Thundire.FileManager.Core.ConsoleUI
 {
-    public class CommandHolder
+    public class CommandHolder : ICommandsRepository
     {
         private readonly Messenger _messenger;
 
@@ -168,7 +169,7 @@ namespace Thundire.FileManager.Core.Services
             OnCommandChanged?.Invoke(command);
         }
 
-        public CommandHolder Register(FileManagerCommand command)
+        public ICommandsRepository Register(FileManagerCommand command)
         {
             var abbreviations = string.Join(' ', command.Abbreviations);
             if (_fileManagerCommands.Find(c => string.Join(' ', c.Abbreviations) == abbreviations) is null)
