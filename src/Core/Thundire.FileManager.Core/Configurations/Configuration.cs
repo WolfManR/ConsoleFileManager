@@ -11,7 +11,5 @@ namespace Thundire.FileManager.Core.Configurations
         public InputHandleMode InputMode { get; set; } = InputHandleMode.CommandLine;
 
         public Action OnClose { get; set; }
-
-        public CommandLineConfiguration CommandLineConfiguration { get; set; }
     }
 }
